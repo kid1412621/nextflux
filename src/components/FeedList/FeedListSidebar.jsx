@@ -1,7 +1,8 @@
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useStore } from "@nanostores/react";
 import { loadFeeds } from "@/stores/feedsStore.js";
-import { isSyncing, lastSync } from "@/stores/syncStore.js";
+import { isSyncing, lastSync, syncProgress } from "@/stores/syncStore.js";
 import {
   Sidebar,
   SidebarContent,
@@ -11,30 +12,47 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ScrollShadow } from "@heroui/react";
 import { formatLastSync } from "@/lib/format";
 import { settingsState } from "@/stores/settingsStore.js";
 import ArticlesGroup from "@/components/FeedList/components/ArticlesGroup.jsx";
 import FeedsGroup from "@/components/FeedList/components/FeedsGroup.jsx";
 import SyncButton from "@/components/FeedList/components/SyncButton.jsx";
 import ProfileButton from "@/components/FeedList/components/ProfileButton.jsx";
-import logo from "@/assets/logo.png";
-import { getLastSyncTime } from "@/db/storage.js";
+import { db } from "@/db/database.js";
+import { liveQuery } from "dexie";
 import AddFeedButton from "@/components/FeedList/components/AddFeedButton.jsx";
+import AppLogo from "@/components/FeedList/components/AppLogo.jsx";
 import { useTranslation } from "react-i18next";
 import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { useParams, useNavigate } from "react-router-dom";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobileViewport, useIsMedium } from "@/hooks/use-mobile";
 import { isModalOpen } from "@/stores/modalStore";
-
-const FeedListSidebar = () => {
+import { ScrollArea } from "@/components/ui/scroll-area.jsx";
+function SyncStatus() {
   const { t } = useTranslation();
   const $lastSync = useStore(lastSync);
   const $isSyncing = useStore(isSyncing);
-  const { showHiddenFeeds, floatingSidebar } = useStore(settingsState);
+  const progress = useStore(syncProgress);
+  const label = $isSyncing
+    ? progress.phase === "background"
+      ? t("common.backgroundSync", { count: progress.received })
+      : t("common.syncing")
+    : formatLastSync($lastSync);
+  return (
+    <span
+      className="truncate text-xs text-muted-foreground opacity-60"
+      role="status"
+    >
+      {label}
+    </span>
+  );
+}
+const FeedListSidebar = ({ resizable = false }) => {
+  const { showHiddenFeeds } = useStore(settingsState);
   const { setOpenMobile } = useSidebar();
   const { articleId } = useParams();
-  const { isMobile, isMedium } = useIsMobile();
+  const isMobile = useIsMobileViewport();
+  const isMedium = useIsMedium();
   const navigate = useNavigate();
   // 判断是否在移动端且正在查看文章详情
   const isArticleDetailOpen = isMedium && !!articleId;
@@ -49,30 +67,36 @@ const FeedListSidebar = () => {
       }
     },
   });
-
   useEffect(() => {
-    lastSync.set(getLastSyncTime());
-  }, []);
-
-  useEffect(() => {
-    loadFeeds();
-  }, [$lastSync, showHiddenFeeds]);
-
+    const subscription = liveQuery(async () => {
+      // Observe only feed metadata and fields used by counters, not article content.
+      await Promise.all([
+        db.feeds.toArray(),
+        db.categories.toArray(),
+        db.articles.where("status").equals("unread").count(),
+        db.articles.where("starred").equals(1).count(),
+      ]);
+      return true;
+    }).subscribe({ next: () => loadFeeds() });
+    return () => subscription.unsubscribe();
+  }, [showHiddenFeeds]);
   return (
     <Sidebar
-      variant={floatingSidebar ? "floating" : "sidebar"}
-      className={`sidebar ${isArticleDetailOpen ? "sidebar-shifted" : ""}`}
+      collapsible={resizable ? "none" : "offcanvas"}
+      className={cn(
+        "sidebar",
+        resizable && "w-full",
+        isArticleDetailOpen && "sidebar-shifted",
+      )}
     >
       <SidebarHeader className="sidebar-header standalone:pt-safe-or-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center gap-1">
-              <img src={logo} alt="logo" className="size-8" />
+              <AppLogo />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">Nextflux</span>
-                <span className="truncate text-xs text-muted opacity-60">
-                  {$isSyncing ? t("common.syncing") : formatLastSync($lastSync)}
-                </span>
+                <SyncStatus />
               </div>
               <SyncButton />
               <AddFeedButton />
@@ -80,11 +104,14 @@ const FeedListSidebar = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <ScrollShadow className="h-full" size={10}>
+      <SidebarContent className="overflow-hidden">
+        <ScrollArea
+          className="h-full min-h-0"
+          viewportClassName="scroll-area-fade"
+        >
           <ArticlesGroup />
           <FeedsGroup />
-        </ScrollShadow>
+        </ScrollArea>
       </SidebarContent>
       <SidebarFooter>
         <ProfileButton />
@@ -92,5 +119,4 @@ const FeedListSidebar = () => {
     </Sidebar>
   );
 };
-
 export default FeedListSidebar;

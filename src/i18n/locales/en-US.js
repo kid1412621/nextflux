@@ -1,5 +1,36 @@
 export default {
+  pwa: {
+    updateAvailable: "A new version of Nextflux is available.",
+    reload: "Reload to update",
+    later: "Later",
+    updateFailed: "Update failed. Please reconnect and try again.",
+  },
+  audioPlayer: {
+    inline: "Article audio player",
+    playing: "Playing",
+    paused: "Paused",
+    seek: "Seek",
+    label: "Music player",
+    listen: "Play audio",
+    open: "Open player",
+    inPlayer: "In your player",
+    expand: "Expand player",
+    collapse: "Collapse player",
+    play: "Play",
+    pause: "Pause",
+    close: "Stop and close",
+    article: "Return to article",
+    backward: "Back 15 seconds",
+    forward: "Forward 30 seconds",
+    playFailed: "Playback could not start. Press play to retry.",
+    mediaFailed: "Audio could not load. Check the source or reopen the player.",
+  },
   common: {
+    resizeFeeds: "Resize feeds sidebar",
+    resizeArticles: "Resize article list",
+    newArticles_one: "{{count}} new article",
+    newArticles_other: "{{count}} new articles",
+    backgroundSync: "Syncing in background · {{count}} cached",
     cancel: "Cancel",
     confirm: "Confirm",
     save: "Save",
@@ -87,12 +118,17 @@ export default {
     categoryNamePlaceholder: "Please enter category title",
     categoryNameRequired: "Please enter category title",
     profile: {
+      switchAccount: "Switch account",
+      addAccount: "Add account",
+      addAnotherAccount: "Add another account",
+      currentAccount: "Current account",
+
       about: "About",
       settings: "Settings",
       openMiniflux: "Open Miniflux",
       logout: "Logout",
       logoutConfirmDescription:
-        "Are you sure you want to logout? All local cached data will be cleared.",
+        "Log out of this account? Its saved credentials and local cache will be removed. Other accounts and app settings will be kept.",
     },
     shortcuts: {
       title: "Shortcuts",
@@ -139,6 +175,15 @@ export default {
     },
   },
   articleView: {
+    fillViewport: "Enter full view",
+    restoreViewport: "Exit full view",
+    readingNavigation: "Reading navigation",
+    jumpToSection: "Jump to section {{index}}: {{title}}",
+    notFoundTitle: "Article not found",
+    notFoundDescription:
+      "This article may not have synced yet, or may have been deleted.",
+    backToList: "Back to list",
+
     imageError: "Error loading image",
     videoError: "Error loading video",
     stopPlay: "STOP",
@@ -202,6 +247,11 @@ export default {
     open: "Open",
   },
   auth: {
+    logoutFailed:
+      "Unable to sign out: saved credentials could not be removed. Check browser storage permissions and try again.",
+    logoutCleanupWarning:
+      "You are signed out, but some local cache could not be confirmed as cleared. Close other app tabs and clear this site’s data.",
+    toggleCredentialVisibility: "Toggle credential visibility",
     login: "Login to your server",
     username: "Username",
     password: "Password",
@@ -219,6 +269,34 @@ export default {
     or: "Or continue with",
   },
   settings: {
+    backup: {
+      title: "Data",
+      subscriptions: "Subscription backup",
+      opmlDescription:
+        "Export all subscriptions and categories from your server, including hidden feeds.",
+      exportOpml: "Export OPML",
+      requiresConnection:
+        "Connect to your Miniflux server to export subscriptions.",
+      preferences: "Settings backup",
+      settingsDescription:
+        "Back up reading, appearance, language and AI preferences. Login credentials and API keys are excluded.",
+      exportSettings: "Back up settings",
+      restoreSettings: "Restore settings",
+      migrationDescription:
+        "OPML and settings backups exclude article content, read status, stars, advanced feed rules and third-party service configuration. Miniflux stores articles and reading states; back up its database to migrate these data.",
+      backupGuide: "Miniflux backup guide",
+      restoreConfirm:
+        "Apply settings from “{{filename}}”, replacing the corresponding current settings? Login credentials, API keys, server subscriptions and articles will stay unchanged.",
+      exportSuccess: "Backup file created",
+      exportFailed: "Export failed. Please try again.",
+      restoreSuccess: "Settings restored",
+      restoreFailed: "Restore failed. Previous settings restored.",
+      invalidBackup:
+        "Invalid Nextflux settings backup or invalid preference values.",
+      unsupportedVersion:
+        "Unsupported backup version. Update Nextflux and try again.",
+      fileTooLarge: "Backup files must be no larger than 1 MB.",
+    },
     title: "Settings",
     general: {
       title: "General",
@@ -243,7 +321,8 @@ export default {
       sortByCreateDate: "By create date",
       markAsReadOnScroll: "Mark as read on scroll",
       showUnreadByDefault: "Show unread articles by default",
-      showUnreadByDefaultDescription: "Refresh the page for changes to take effect",
+      showUnreadByDefaultDescription:
+        "Refresh the page for changes to take effect",
     },
     appearance: {
       title: "Appearance",
@@ -257,7 +336,6 @@ export default {
       themes: {
         light: "Light",
         stone: "Stone",
-        leaf: "Leaf",
         dark: "Dark",
         "nord-dark": "Nord",
       },
@@ -266,21 +344,17 @@ export default {
       moreSpace: "More space",
       normal: "Normal",
       LargerText: "Larger text",
-      borderRadius: "Border radius",
       favicons: "FAVICONS",
       shape: "Shape",
       circle: "Circle",
       square: "Square",
       grayscale: "Grayscale favicons",
-      sidebar: "SIDEBAR",
-      floatingSidebar: "Floating sidebar",
       articleList: "ARTICLE LIST",
       imagePreviews: "Image previews",
       none: "None",
       small: "Small",
       large: "Large",
       showFavicon: "Display favicons",
-      showIndicator: "Show scroll indicator",
       titleLines: "Title lines",
       textPreviewLines: "Summary lines",
       showReadingTime: "Estimated reading time",
@@ -293,9 +367,16 @@ export default {
       useNativeVideoPlayer: "Use browser's native video player",
     },
     readability: {
+      media: "MEDIA",
+      useThirdPartyMediaPlayer: "Use third-party video player",
+      useThirdPartyMediaPlayerDescription:
+        "Experimental: use Video.js for article videos. Audio always uses the global player with playback progress sync for audio attachments.",
+      toolbars: "TOOLBARS",
+      readingNavigation: "READING NAVIGATION",
+      showReadingRail: "Show reading navigation",
       title: "Reading",
       text: "TEXT",
-      autoHideToolbar: "Auto hide toolbar",
+      autoHideToolbar: "Auto hide/show bars",
       font: "Font",
       systemFont: "System",
       sansSerif: "Sans-serif",
@@ -313,6 +394,8 @@ export default {
       reset: "Reset",
     },
     ai: {
+      required: "{{field}} is required",
+      invalidBaseUrl: "Enter a valid HTTP or HTTPS URL",
       title: "AI",
       description: "Currently only supports OpenAI and OpenAI-compatible APIs",
       openai: "OpenAI Configuration",

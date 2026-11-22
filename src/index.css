@@ -1,186 +1,362 @@
 @import "tailwindcss";
-@import "@heroui/styles";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --radius-sm: calc(var(--radius) * 0.75);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.25);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
+  --radius-4xl: calc(var(--radius) * 4);
+  --radius-field: calc(var(--radius) * 1.5);
+  --shadow-surface: var(--shadow-custom);
+}
 
 @config '../tailwind.config.js';
 
+@custom-variant standalone {
+  @media (display-mode: standalone) {
+    @slot;
+  }
+}
+
 @layer base {
   :root {
-    --shadow-custom: 0 0 5px 0 rgba(0, 0, 0, 0.02),
-      0 2px 10px 0 rgba(0, 0, 0, 0.07), 0 0 1px 0 rgba(0, 0, 0, 0.3);
-    --shadow-custom-inner: inset 0 0 2px 0 rgba(0, 0, 0, 0.05),
-      inset 0 0 4px 0 rgba(0, 0, 0, 0.05), inset 0 0 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-custom-md: 0 24px 40px -12px rgb(0 0 0 / 0.08),
-      0 16px 28px -8px rgb(0 0 0 / 0.04), 0 4px 6px -2px rgb(0 0 0 / 0.04),
-      0 0 2px 0 rgb(0 0 0 / 0.04), 0 0 0 1px rgb(0 0 0 / 0.04);
-    --shadow-custom-btn: 0 1px 2px -0.5px rgba(255, 255, 255, 0.12) inset,
-      0 0.5px 0.5px rgba(255, 255, 255, 0.16) inset,
-      0 8px 24px -4px rgba(255, 255, 255, 0.16) inset,
-      0 8px 8px -3px rgba(0, 0, 0, 0.03), 0 5px 5px -2.5px rgba(0, 0, 0, 0.03),
-      0 3px 3px -1.5px rgba(0, 0, 0, 0.03), 0 2px 2px -1px rgba(0, 0, 0, 0.03),
-      0 1px 1px -0.5px rgba(0, 0, 0, 0.03), 0 0.5px 0.5px rgba(0, 0, 0, 0.03);
+    color-scheme: light;
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.488 0.243 264.376);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.967 0.001 286.375);
+    --secondary-foreground: oklch(0.21 0.006 285.885);
+    --muted: oklch(0.930999 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.930999 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.809 0.105 251.813);
+    --chart-2: oklch(0.623 0.214 259.815);
+    --chart-3: oklch(0.546 0.245 262.881);
+    --chart-4: oklch(0.488 0.243 264.376);
+    --chart-5: oklch(0.424 0.199 265.638);
+    --radius: 0.45rem;
+    --sidebar: color-mix(in srgb, oklch(0.985 0 0), black 4%);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.546 0.245 262.881);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.930999 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+
+    --destructive-foreground: oklch(1 0 0);
+    --success: oklch(0.7329 0.1935 150.81);
+    --warning: oklch(0.7819 0.1585 72.33);
+    --shadow-custom:
+      0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.07),
+      0 0 1px 0 rgba(0, 0, 0, 0.3), 0 4px 8px rgba(255, 255, 255, 0.04) inset,
+      0 2px 4px rgba(255, 255, 255, 0.04) inset,
+      0 1px 1px rgba(255, 255, 255, 0.04) inset,
+      0 0.5px 0.5px rgba(255, 255, 255, 0.06) inset;
+    --shadow-custom-inner:
+      inset 0 0 2px 0 rgba(0, 0, 0, 0.05), inset 0 0 4px 0 rgba(0, 0, 0, 0.05),
+      inset 0 0 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-custom-md:
+      0 24px 40px -12px rgb(0 0 0 / 0.08), 0 16px 28px -8px rgb(0 0 0 / 0.04),
+      0 4px 6px -2px rgb(0 0 0 / 0.04), 0 0 2px 0 rgb(0 0 0 / 0.04),
+      0 0 0 1px rgb(0 0 0 / 0.04);
+    --shadow-custom-btn:
+      0 1px 2px -0.5px #ffffff1f inset, 0 0.5px 0.5px #ffffff29 inset,
+      0 8px 24px -4px #ffffff29 inset, 0 8px 8px -3px #09011408,
+      0 5px 5px -2.5px #09011408, 0 3px 3px -1.5px #08011408,
+      0 2px 2px -1px #08011408, 0 1px 1px -0.5px #08011408,
+      0 0.5px 0.5px #08011408;
+    --liquid-glass-highlight: rgb(255 255 255 / 85%);
+    --liquid-glass-edge: rgb(0 0 0 / 15%);
+    --liquid-glass-drop: rgb(0 0 0 / 15%);
+    --liquid-glass-edge-mix: 5%;
   }
 
   .dark {
-    --shadow-custom: 0 0 5px 0 rgba(0, 0, 0, 0.05),
-      0 2px 10px 0 rgba(0, 0, 0, 0.2), inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15),
-      0 0 1px 0 rgba(255, 255, 255, 0.6);
-    --shadow-custom-inner: inset 0 1px 1px 0 rgba(255, 255, 255, 0.02),
+    color-scheme: dark;
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.623 0.214 259.815);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.274 0.006 286.033);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.809 0.105 251.813);
+    --chart-2: oklch(0.623 0.214 259.815);
+    --chart-3: oklch(0.546 0.245 262.881);
+    --chart-4: oklch(0.488 0.243 264.376);
+    --chart-5: oklch(0.424 0.199 265.638);
+    --sidebar: var(--background);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.623 0.214 259.815);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+    --shadow-custom:
+      0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2),
+      inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15),
+      0 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 4px 8px rgba(255, 255, 255, 0.02) inset,
+      0 2px 4px rgba(255, 255, 255, 0.01) inset,
+      0 1px 1px rgba(255, 255, 255, 0.01) inset,
+      0 0.5px 0.5px rgba(255, 255, 255, 0.03) inset;
+    --shadow-custom-inner:
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.02),
       inset 0 -0.5px 1px 0 rgba(255, 255, 255, 0.1),
       inset 1px 1.5px 4px 0 rgba(0, 0, 0, 0.08),
       inset 1px 1.5px 4px 0 rgba(0, 0, 0, 0.1);
-    --shadow-custom-md: 0 1px 3px #ffffff0f inset,
-      0 0.5px 0.5px #ffffff0f inset, 0 16px 56px #0000003d,
-      0 4px 16px #0000003d, 0 1px 2px #0000003d, 0 0 0 1px rgba(0, 0, 0, 0.1);
+    --shadow-custom-md:
+      0 1px 3px #ffffff0f inset, 0 0.5px 0.5px #ffffff0f inset,
+      0 16px 56px #0000003d, 0 4px 16px #0000003d, 0 1px 2px #0000003d,
+      0 0 0 1px rgba(0, 0, 0, 0.1);
+    --liquid-glass-highlight: rgb(255 255 255 / 20%);
+    --liquid-glass-edge: rgb(255 255 255 / 8%);
+    --liquid-glass-drop: rgb(0 0 0 / 24%);
+    --liquid-glass-edge-mix: 3.5%;
   }
 
   [data-theme="stone"] {
+    --muted: var(--secondary);
+    --accent: var(--secondary);
+    --accent-foreground: var(--foreground);
+    --input: var(--border);
+    --sidebar: var(--background);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
     color-scheme: light;
-    /* Primitive Colors (Do not change between light and dark) */
-    --white: oklch(100% 0 0);
-    --black: oklch(0% 0 0);
-    --snow: oklch(0.9911 0 0);
-    --eclipse: rgb(66, 64, 59);
     /* Base Colors */
     --background: rgb(227, 224, 219);
-    --foreground: var(--eclipse);
-    /* Surface: Used for non-overlay components */
-    --surface: rgb(243, 241, 235);
-    --surface-foreground: var(--foreground);
-    /* Overlay: Used for floating/overlay components */
-    --overlay: rgb(244, 241, 236);
-    --overlay-foreground: var(--foreground);
-    --muted: rgb(122, 119, 115);
-    --scrollbar: oklch(87.1% 0.006 286.286);
-    --default: rgb(220, 217, 213);
-    --default-foreground: var(--eclipse);
-    /* Ocean accent */
-    --accent: rgb(216, 94.007, 74.996);
-    --accent-foreground: var(--snow);
-    /* Form Field Defaults */
-    --field-background: rgb(244, 241, 236);
-    --field-foreground: var(--foreground);
-    --field-placeholder: var(--muted);
-    --field-border: transparent;
-    /* Status (kept compatible) */
+    --foreground: rgb(66, 64, 59);
+    --card: rgb(243, 241, 235);
+    --card-foreground: var(--foreground);
+    --popover: rgb(244, 241, 236);
+    --popover-foreground: var(--foreground);
+    --muted-foreground: rgb(122, 119, 115);
+    --secondary: rgb(220, 217, 213);
+    --secondary-foreground: rgb(66, 64, 59);
+    --primary: rgb(216, 94.007, 74.996);
+    --primary-foreground: oklch(0.985 0 0);
+    /* Status */
     --success: oklch(0.7329 0.1935 150.81);
-    --success-foreground: var(--eclipse);
+    --success-foreground: rgb(66, 64, 59);
     --warning: oklch(0.7819 0.1585 72.33);
-    --warning-foreground: var(--eclipse);
-    --danger: rgb(216, 94.007, 74.996);
-    --danger-foreground: var(--snow);
-    /* Component Colors */
-    --segment: var(--white);
-    --segment-foreground: var(--foreground);
-    /* Misc */
-    --border: rgb(197, 195, 190);
-    --separator: rgb(220, 217, 213);
-    --focus: var(--accent);
-  }
-
-  [data-theme="leaf"] {
-    color-scheme: light;
-    /* Primitive Colors */
-    --white: oklch(100% 0 0);
-    --black: oklch(0% 0 0);
-    --snow: oklch(0.9911 0 0);
-    --eclipse: rgb(54, 67, 54);
-    /* Base Colors */
-    --background: rgb(223, 231, 225);
-    --foreground: var(--eclipse);
-    /* Surface: Used for non-overlay components */
-    --surface: rgb(236, 244, 238);
-    --surface-foreground: var(--foreground);
-    /* Overlay: Used for floating/overlay components */
-    --overlay: rgb(236, 244, 238);
-    --overlay-foreground: var(--foreground);
-    --muted: rgb(82, 92, 85);
-    --scrollbar: oklch(80% 0.03 145);
-    --default: rgba(0, 0, 0, 0.05);
-    --default-foreground: var(--eclipse);
-    /* Ocean accent */
-    --accent: rgb(53, 117, 74);
-    --accent-foreground: var(--snow);
-    /* Form Field Defaults */
-    --field-background: rgb(236, 244, 238);
-    --field-foreground: var(--foreground);
-    --field-placeholder: var(--muted);
-    --field-border: transparent;
-    /* Status (kept compatible) */
-    --success: oklch(0.65 0.2 145);
-    --success-foreground: var(--snow);
-    --warning: oklch(0.75 0.18 85);
-    --warning-foreground: var(--eclipse);
-    --danger: oklch(0.55 0.22 25);
-    --danger-foreground: var(--snow);
-    /* Component Colors */
-    --segment: var(--white);
-    --segment-foreground: var(--foreground);
-    /* Misc */
-    --border: rgba(0, 0, 0, 0.05);
-    --separator: rgba(0, 0, 0, 0.07);
-    --focus: var(--accent);
+    --warning-foreground: rgb(66, 64, 59);
+    --destructive: rgb(216, 94.007, 74.996);
+    --destructive-foreground: oklch(0.9911 0 0);
+    --border: rgba(197, 195, 190, 0.8);
+    --ring: var(--primary);
   }
 
   [data-theme="nord-dark"] {
+    --muted: var(--secondary);
+    --accent: var(--secondary);
+    --accent-foreground: var(--foreground);
+    --input: var(--border);
+    --sidebar: var(--background);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: var(--muted);
+    --sidebar-accent-foreground: var(--foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
     color-scheme: dark;
     /* Base Colors */
     --background: rgb(36.001, 41, 51);
-    --foreground: var(--snow);
-    /* Surface: Used for non-overlay components */
-    --surface: rgb(46.001, 52, 64);
-    --surface-foreground: var(--foreground);
-    /* Overlay: Used for floating/overlay components */
-    --overlay: rgb(46.001, 52, 64);
-    --overlay-foreground: var(--foreground);
-    --muted: rgb(216, 222, 233);
-    --scrollbar: oklch(70.5% 0.015 286.067);
-    --default: rgb(59.001, 65.999, 82.001);
-    --default-foreground: var(--snow);
-    /* Form Field Defaults */
-    --field-background: var(--default);
-    --field-foreground: var(--foreground);
-    /* Ocean accent */
-    --accent: rgb(135, 192, 208);
-    --accent-foreground: var(--snow);
+    --foreground: oklch(0.9911 0 0);
+    --card: rgb(46.001, 52, 64);
+    --card-foreground: var(--foreground);
+    --popover: rgb(46.001, 52, 64);
+    --popover-foreground: var(--foreground);
+    --muted-foreground: rgb(216, 222, 233);
+    --secondary: rgb(59.001, 65.999, 82.001);
+    --secondary-foreground: oklch(0.9911 0 0);
+    --primary: rgb(135, 192, 208);
+    --primary-foreground: oklch(0.985 0 0);
     /* Status */
     --success: rgb(163, 190, 140);
-    --success-foreground: var(--eclipse);
+    --success-foreground: oklch(0.2103 0.0059 285.89);
     --warning: rgb(235, 203, 139);
-    --warning-foreground: var(--eclipse);
-    --danger: rgb(191, 97.004, 106);
-    --danger-foreground: var(--snow);
-    /* Component Colors */
-    --segment: rgb(76.001, 85.999, 106);
-    --segment-foreground: var(--foreground);
-    /* Misc */
+    --warning-foreground: oklch(0.2103 0.0059 285.89);
+    --destructive: rgb(191, 97.004, 106);
+    --destructive-foreground: oklch(0.9911 0 0);
     --border: rgb(54.001, 60, 74);
-    --separator: rgb(59.001, 65.999, 82.001);
-    --focus: var(--accent);
+    --ring: var(--primary);
+  }
+}
+
+@layer utilities {
+  .theme-options .theme-option,
+  .theme-options .theme-option:hover,
+  .theme-options .theme-option[aria-pressed="true"] {
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .theme-option-preview {
+    padding: 8px;
+    border: 2px solid var(--border);
+    background-color: var(--muted);
+    transition:
+      border-color 150ms,
+      background-color 150ms;
+  }
+  .theme-option:hover .theme-option-preview {
+    background-color: color-mix(in srgb, var(--primary) 8%, var(--muted));
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  }
+  .theme-option[aria-pressed="true"] .theme-option-preview,
+  .theme-option:focus-visible .theme-option-preview {
+    border-color: var(--primary);
+  }
+  .theme-option[aria-pressed="true"] .theme-option-preview {
+    background-color: color-mix(in srgb, var(--primary) 14%, var(--background));
+  }
+  .theme-option-label {
+    padding: 0 8px;
+    border-radius: 999px;
+    color: var(--muted-foreground);
+    transition:
+      background-color 150ms,
+      color 150ms;
+  }
+  .theme-option[aria-pressed="true"] .theme-option-label {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
 @layer components {
-  .dropdown__popover {
-    @apply min-w-40 shadow-custom-md bg-overlay/90 backdrop-blur-sm max-h-80!;
+  /* Baseline 4.0-inspired material, with a stronger fill for readable controls. */
+  .liquid-glass {
+    --muted-foreground: var(--foreground);
+    --liquid-glass-opacity: 50%;
+    --liquid-glass-fill: color-mix(in oklch, var(--popover) var(--liquid-glass-opacity), transparent);
+    --liquid-glass-rim: color-mix(in oklch, var(--liquid-glass-fill), white var(--liquid-glass-edge-mix));
+    background: linear-gradient(
+      to bottom,
+      var(--liquid-glass-rim),
+      var(--liquid-glass-fill) 25%,
+      var(--liquid-glass-fill) 65%,
+      var(--liquid-glass-rim)
+    );
+    -webkit-backdrop-filter: blur(6px) saturate(1.2);
+    backdrop-filter: blur(6px) saturate(1.2);
+    box-shadow:
+      0 0 0 0.5px var(--liquid-glass-edge),
+      -1px 0 0 -0.5px var(--liquid-glass-drop),
+      1px 0 0 -0.5px var(--liquid-glass-drop),
+      inset 0 1.5px 1.5px -1.5px var(--liquid-glass-highlight),
+      inset 0 -1.5px 1.5px -1.5px var(--liquid-glass-highlight),
+      0 2px 12px -3px var(--liquid-glass-drop);
   }
-  .button--primary,
-  .button--danger {
-    @apply shadow-custom-btn relative before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:pointer-events-none before:opacity-5 before:bg-linear-to-b before:from-white before:to-white/50;
+
+  .liquid-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      150deg,
+      var(--liquid-glass-highlight),
+      transparent 35%,
+      transparent 65%,
+      var(--liquid-glass-highlight)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
-  .button--primary {
-    @apply border border-accent;
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .liquid-glass {
+      --liquid-glass-opacity: 100%;
+    }
   }
-  .button--danger {
-    @apply border border-danger;
+
+  [data-slot="overlay-body"] {
+    @apply min-h-0 flex-1;
   }
-  .close-button {
-    @apply rounded-full dark:shadow-custom-btn;
+  * {
+    @apply border-border;
   }
-  .button--icon-only {
-    @apply rounded-full;
+  body {
+    @apply bg-background text-foreground;
   }
-  .tooltip {
-    @apply shadow-custom-md py-1 rounded-full;
+  button:not(:disabled),
+  [role="menuitem"],
+  [role="menuitemradio"] {
+    cursor: pointer;
   }
 
   /* Page Slide Transition for Settings Drawer */
@@ -195,15 +371,12 @@
     inset: 0;
     opacity: 0;
     pointer-events: none;
-    overflow-y: auto;
+    overflow: hidden;
     z-index: 1;
-    filter: blur(3px);
     transform: translateX(-24px);
     transition:
       opacity 300ms cubic-bezier(0.4, 0, 0.2, 1),
-      filter 300ms cubic-bezier(0.4, 0, 0.2, 1),
       transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: opacity, filter, transform;
   }
 
   .t-settings-slide .t-page[data-page-id="content"] {
@@ -214,37 +387,60 @@
   .t-settings-slide[data-active="content"] .t-page[data-page-id="content"] {
     opacity: 1;
     pointer-events: auto;
-    filter: blur(0);
-    transform: translateX(0);
+    transform: none;
     z-index: 2;
   }
 }
 
+.scroll-area-fade {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 min(40px, var(--scroll-area-overflow-y-start, 0px)),
+    #000 calc(100% - min(40px, var(--scroll-area-overflow-y-end, 0px))),
+    transparent
+  );
+  mask-repeat: no-repeat;
+}
+
 /* iOS 风格文章列表移动动画 */
-.main-content > div:first-child {
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-              background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, filter, background-color;
+.article-list-panel {
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, background-color;
 }
 
 .article-list-shifted {
   transform: translateX(-100px);
-  background-color: var(--background);
+  background-color: var(--sidebar);
   filter: brightness(0.7);
 }
 
-
 /* 侧边栏动画 */
-.sidebar {
+.sidebar:not([data-mobile="true"]) {
   transition-property: transform, filter, background-color, left, width;
   transition-duration: 0.5s, 0.5s, 0.5s, 0.2s, 0.2s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0, 0, 1, 1), cubic-bezier(0, 0, 1, 1);
+  transition-timing-function:
+    cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1),
+    cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0, 0, 1, 1),
+    cubic-bezier(0, 0, 1, 1);
   transform: translateX(0);
 }
 
-.sidebar-shifted.sidebar {
+.sidebar-shifted.sidebar:not([data-mobile="true"]) {
   transform: translateX(-100px);
   filter: brightness(0.7);
-  background-color: var(--background);
+  background-color: var(--sidebar);
+}
+
+/* 统一使用纯色圆形波纹，边缘不做渐变过渡。 */
+.salty-ripple.app-ripple .salty-ripple-surface::after {
+  background: radial-gradient(
+    closest-side,
+    var(--ripple-color, currentColor) 100%,
+    transparent 100%
+  );
+  transition-duration: 220ms;
 }

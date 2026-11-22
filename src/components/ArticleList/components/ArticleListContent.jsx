@@ -1,4 +1,5 @@
-import { memo, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { memo, useEffect, useMemo, useState } from "react";
 import ArticleCard from "./ArticleCard";
 import { useParams } from "react-router-dom";
 import {
@@ -10,43 +11,68 @@ import {
 } from "@/stores/articlesStore.js";
 import { useStore } from "@nanostores/react";
 import { Virtuoso } from "react-virtuoso";
-import { useIsMobile } from "@/hooks/use-mobile.jsx";
-import { Button } from "@heroui/react";
+import { useIsMedium } from "@/hooks/use-mobile.jsx";
 import { CheckCheck, Loader2 } from "lucide-react";
 import { handleMarkAllRead } from "@/handlers/articleHandlers";
 import { isSyncing } from "@/stores/syncStore.js";
 import { useTranslation } from "react-i18next";
-import { loadArticles } from "@/stores/articlesStore";
-import { settingsState } from "@/stores/settingsStore.js";
 import { cn } from "@/lib/utils.js";
-
+import { useReducedMotion } from "@/hooks/useReducedMotion.js";
+import { ScrollArea } from "@/components/ui/scroll-area.jsx";
 const ArticleItem = memo(({ article, isLast }) => (
-  <div className="mx-2">
+  <div className="mx-auto w-full max-w-[560px] px-2">
     <ArticleCard article={article} />
     {!isLast && <div className="h-4" />}
   </div>
 ));
 ArticleItem.displayName = "ArticleItem";
-
+const ListHeader = () => <div className="vlist-header h-2" />;
+function ListFooter({
+  context: { feedId, categoryId, $filter, $isSyncing, $loadingMore },
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="vlist-footer mx-auto h-24 w-full max-w-[560px] px-2 pt-2">
+      <Button
+        size="sm"
+        variant="secondary"
+        className="w-full"
+        disabled={$filter === "starred"}
+        onClick={() =>
+          handleMarkAllRead(
+            feedId ? "feed" : categoryId ? "category" : "all",
+            feedId || categoryId,
+          )
+        }
+      >
+        {$isSyncing || $loadingMore ? (
+          <Loader2 data-icon="inline-start" className="animate-spin" />
+        ) : (
+          <CheckCheck data-icon="inline-start" />
+        )}
+        {t("articleList.markAllRead")}
+      </Button>
+    </div>
+  );
+}
+const listComponents = { Header: ListHeader, Footer: ListFooter };
 export default function ArticleListContent({
   articles,
   setVisibleRange,
   virtuosoRef,
 }) {
-  const { t } = useTranslation();
   const { feedId, categoryId, articleId } = useParams();
   const $filter = useStore(filter);
   const $isSyncing = useStore(isSyncing);
-  const { isMedium } = useIsMobile();
+  const isMedium = useIsMedium();
   const index = articles.findIndex(
     (article) => article.id === parseInt(articleId),
   );
   const $hasMore = useStore(hasMore);
-  const $currentPage = useStore(currentPage);
   const $loading = useStore(loading);
   const $loadingMore = useStore(loadingMore);
-  const { reduceMotion } = useStore(settingsState);
-
+  const reduceMotion = useReducedMotion();
+  const [scrollViewport, setScrollViewport] = useState(null);
   useEffect(() => {
     if (isMedium) {
       return;
@@ -54,104 +80,65 @@ export default function ArticleListContent({
     if (index >= 0) {
       virtuosoRef.current?.scrollIntoView({
         index: index,
-        behavior: "smooth",
+        behavior: reduceMotion ? "auto" : "smooth",
       });
     }
-  }, [isMedium, index]);
-
-  const handleEndReached = async () => {
-    if (!$hasMore || $loadingMore) return;
-
-    try {
-      loadingMore.set(true);
-      const nextPage = $currentPage + 1;
-      if (feedId) {
-        await loadArticles(feedId, "feed", nextPage, true);
-      } else if (categoryId) {
-        await loadArticles(categoryId, "category", nextPage, true);
-      } else {
-        await loadArticles(null, null, nextPage, true);
-      }
-    } finally {
-      loadingMore.set(false);
-    }
+  }, [isMedium, index, reduceMotion, virtuosoRef, scrollViewport]);
+  const handleEndReached = () => {
+    if (!$hasMore || loadingMore.get()) return;
+    loadingMore.set(true);
+    currentPage.set(currentPage.get() + 1);
   };
-
+  const context = useMemo(
+    () => ({
+      feedId,
+      categoryId,
+      $filter,
+      $isSyncing,
+      $loadingMore,
+    }),
+    [feedId, categoryId, $filter, $isSyncing, $loadingMore],
+  );
   return (
-    <div className="h-full">
+    <div className="min-h-0 flex-1 overflow-hidden">
       {$loading ? (
-        <Loader2 className="size-4 animate-spin mx-auto mt-3 text-accent" />
+        <Loader2 className="size-4 animate-spin mx-auto mt-3 text-primary" />
       ) : (
-        <div
+        <ScrollArea
+          viewportRef={setScrollViewport}
           className={cn(
-            "article-list-content flex-1 h-full",
+            "motion-sensitive article-list-content h-full",
             reduceMotion
               ? ""
               : " animate-in duration-400 fade-in slide-in-from-bottom-12 ease-in-out",
           )}
         >
-          <Virtuoso
-            ref={virtuosoRef}
-            className="v-list h-full"
-            overscan={{ main: 2, reverse: 0 }}
-            data={articles}
-            rangeChanged={setVisibleRange}
-            context={{
-              feedId,
-              categoryId,
-              $filter,
-              $isSyncing,
-              handleMarkAllRead,
-            }}
-            totalCount={articles.length}
-            endReached={handleEndReached}
-            components={{
-              Header: () => <div className="vlist-header h-2"></div>,
-              Footer: ({
-                context: {
-                  feedId,
-                  categoryId,
-                  $filter,
-                  $isSyncing,
-                  handleMarkAllRead,
-                },
-              }) => (
-                <div className="vlist-footer h-24 pt-2 px-2">
-                  <Button
-                    size="sm"
-                    variant="tertiary"
-                    className="text-muted"
-                    isDisabled={$filter === "starred"}
-                    fullWidth
-                    onPress={() => {
-                      if (feedId) {
-                        handleMarkAllRead("feed", feedId);
-                      } else if (categoryId) {
-                        handleMarkAllRead("category", categoryId);
-                      } else {
-                        handleMarkAllRead();
-                      }
-                    }}
-                  >
-                    {$isSyncing || $loadingMore ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <CheckCheck className="size-4" />
-                    )}
-                    {t("articleList.markAllRead")}
-                  </Button>
-                </div>
-              ),
-            }}
-            itemContent={(index, article) => (
-              <ArticleItem
-                key={article.id}
-                article={article}
-                isLast={index === articles.length - 1}
-              />
-            )}
-          />
-        </div>
+          {scrollViewport && (
+            <Virtuoso
+              ref={virtuosoRef}
+              className="v-list"
+              customScrollParent={scrollViewport}
+              overscan={{
+                main: 2,
+                reverse: 0,
+              }}
+              data={articles}
+              rangeChanged={setVisibleRange}
+              context={context}
+              computeItemKey={(_, article) => article.id}
+              totalCount={articles.length}
+              endReached={handleEndReached}
+              components={listComponents}
+              itemContent={(index, article) => (
+                <ArticleItem
+                  key={article.id}
+                  article={article}
+                  isLast={index === articles.length - 1}
+                />
+              )}
+            />
+          )}
+        </ScrollArea>
       )}
     </div>
   );

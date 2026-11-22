@@ -1,5 +1,37 @@
 export default {
+  pwa: {
+    updateAvailable: "Nextflux uygulamasının yeni bir sürümü mevcut.",
+    reload: "Yenile ve güncelle",
+    later: "Daha sonra",
+    updateFailed: "Güncelleme başarısız. İnternete bağlanıp tekrar deneyin.",
+  },
+  audioPlayer: {
+    inline: "Makale ses oynatıcısı",
+    playing: "Oynatılıyor",
+    paused: "Duraklatıldı",
+    seek: "Oynatma konumu",
+    inPlayer: "Oynatıcıda açık",
+    label: "Müzik çalar",
+    listen: "Sesi oynat",
+    open: "Oynatıcıyı aç",
+    expand: "Oynatıcıyı genişlet",
+    collapse: "Oynatıcıyı daralt",
+    play: "Oynat",
+    pause: "Duraklat",
+    close: "Durdur ve kapat",
+    article: "Makaleye dön",
+    backward: "15 saniye geri",
+    forward: "30 saniye ileri",
+    playFailed:
+      "Oynatma başlatılamadı. Tekrar denemek için oynat düğmesine basın.",
+    mediaFailed:
+      "Ses yüklenemedi. Kaynağı kontrol edin veya oynatıcıyı yeniden açın.",
+  },
   common: {
+    resizeFeeds: "Abonelik kenar çubuğunu yeniden boyutlandır",
+    resizeArticles: "Makale listesini yeniden boyutlandır",
+    newArticles: "{{count}} yeni makale",
+    backgroundSync: "Arka planda eşitleniyor · {{count}} önbellekte",
     cancel: "İptay",
     confirm: "Onayla",
     save: "Kaydet",
@@ -87,12 +119,17 @@ export default {
     categoryNamePlaceholder: "Lütfen kategori başlığını girin",
     categoryNameRequired: "Lütfen kategori başlığını girin",
     profile: {
+      switchAccount: "Hesap değiştir",
+      addAccount: "Hesap ekle",
+      addAnotherAccount: "Başka bir hesap ekle",
+      currentAccount: "Geçerli hesap",
+
       about: "Hakkında",
       settings: "Ayarlar",
       openMiniflux: "Miniflux'u Aç",
       logout: "Çıkış",
       logoutConfirmDescription:
-        "Çıkış yapmak istediğinize emin misiniz? Tüm yerel önbellek verileri silinecek.",
+        "Bu hesaptan çıkılsın mı? Kayıtlı kimlik bilgileri ve yerel önbelleği silinecek. Diğer hesaplar ve uygulama ayarları korunacak.",
     },
     shortcuts: {
       title: "Kısayollar",
@@ -139,6 +176,14 @@ export default {
     },
   },
   articleView: {
+    fillViewport: "Tam görünüme geç",
+    restoreViewport: "Tam görünümden çık",
+    readingNavigation: "Okuma gezintisi",
+    jumpToSection: "{{index}}. bölüme git: {{title}}",
+    notFoundTitle: "Makale bulunamadı",
+    notFoundDescription: "Bu makale henüz eşitlenmemiş veya silinmiş olabilir.",
+    backToList: "Listeye dön",
+
     imageError: "Resim yüklemede hata",
     videoError: "Video yüklemede hata",
     stopPlay: "DUR",
@@ -202,6 +247,11 @@ export default {
     open: "Aç",
   },
   auth: {
+    logoutFailed:
+      "Oturum kapatılamadı: kayıtlı kimlik bilgileri kaldırılamadı. Tarayıcı depolama izinlerini kontrol edip yeniden deneyin.",
+    logoutCleanupWarning:
+      "Oturumunuz kapatıldı ancak bazı yerel önbelleklerin temizlendiği doğrulanamadı. Diğer uygulama sekmelerini kapatıp bu sitenin verilerini temizleyin.",
+    toggleCredentialVisibility: "Kimlik bilgilerini göster veya gizle",
     login: "Sunucunuza giriş yapın",
     username: "Kullanıcı adı",
     password: "Parola",
@@ -219,6 +269,33 @@ export default {
     or: "Veya devam etmek için",
   },
   settings: {
+    backup: {
+      title: "Veriler",
+      subscriptions: "Abonelik yedeği",
+      opmlDescription:
+        "Gizli akışlar dahil sunucudaki tüm abonelikleri ve kategorileri dışa aktarın.",
+      exportOpml: "OPML dışa aktar",
+      requiresConnection:
+        "Abonelikleri dışa aktarmak için Miniflux sunucusuna bağlanın.",
+      preferences: "Ayar yedeği",
+      settingsDescription:
+        "Okuma, görünüm, dil ve yapay zekâ tercihlerini yedekleyin. Giriş bilgileri ve API anahtarları dahil edilmez.",
+      exportSettings: "Ayarları yedekle",
+      restoreSettings: "Ayarları geri yükle",
+      migrationDescription:
+        "Bu yedekler makaleleri, okuma durumunu, yıldızları, gelişmiş akış kurallarını ve üçüncü taraf hizmet ayarlarını içermez. Bu verileri taşımak için Miniflux veritabanını yedekleyin.",
+      backupGuide: "Miniflux resmî yedekleme kılavuzu",
+      restoreConfirm:
+        "“{{filename}}” dosyasındaki ayarlar karşılık gelen mevcut ayarların yerine uygulansın mı? Giriş bilgileri, API anahtarları, sunucu abonelikleri ve makaleleri değişmez.",
+      exportSuccess: "Yedek dosyası oluşturuldu",
+      exportFailed: "Dışa aktarma başarısız. Tekrar deneyin.",
+      restoreSuccess: "Ayarlar geri yüklendi",
+      restoreFailed: "Geri yükleme başarısız. Önceki ayarlar geri getirildi.",
+      invalidBackup: "Geçersiz Nextflux ayar yedeği veya ayar değerleri.",
+      unsupportedVersion:
+        "Desteklenmeyen yedek sürümü. Nextflux uygulamasını güncelleyin.",
+      fileTooLarge: "Yedek dosyası en fazla 1 MB olabilir.",
+    },
     title: "Ayarlar",
     general: {
       title: "Genel",
@@ -243,7 +320,8 @@ export default {
       sortByCreateDate: "Oluşturma tarihine göre",
       markAsReadOnScroll: "Kaydırırken okundu olarak işaretle",
       showUnreadByDefault: "Varsayılan olarak okunmamış makaleleri göster",
-      showUnreadByDefaultDescription: "Değişikliklerin geçerli olması için sayfayı yenileyin",
+      showUnreadByDefaultDescription:
+        "Değişikliklerin geçerli olması için sayfayı yenileyin",
     },
     appearance: {
       title: "Görünüm",
@@ -257,7 +335,6 @@ export default {
       themes: {
         light: "Aydınlık",
         stone: "Taş",
-        leaf: "Yaprak",
         dark: "Karanlık",
         "nord-dark": "Nord",
       },
@@ -266,21 +343,17 @@ export default {
       moreSpace: "Daha fazla alan",
       normal: "Normal",
       LargerText: "Daha büyük yazı",
-      borderRadius: "Köşe yuvarlatma",
       favicons: "FAVICONLAR",
       shape: "Şekil",
       circle: "Daire",
       square: "Kare",
       grayscale: "Gri tonlamalı faviconlar",
-      sidebar: "KENAR ÇUBUĞU",
-      floatingSidebar: "Yüzen kenar çubuğu",
       articleList: "MAKALE LİSTESİ",
       imagePreviews: "Görüntü önizlemeleri",
       none: "Yok",
       small: "Küçük",
       large: "Büyük",
       showFavicon: "Faviconları göster",
-      showIndicator: "Kaydırma çubuğunu göster",
       titleLines: "Başlık satırları",
       textPreviewLines: "Metin satırları",
       showReadingTime: "Tahmini okuma süresi",
@@ -293,9 +366,16 @@ export default {
       useNativeVideoPlayer: "Tarayıcının dahili video oynatıcısını kullan",
     },
     readability: {
+      media: "MEDYA",
+      useThirdPartyMediaPlayer: "Üçüncü taraf video oynatıcı kullan",
+      useThirdPartyMediaPlayerDescription:
+        "Deneysel özellik: Makalelerdeki videolar için Video.js kullanır. Ses her zaman genel oynatıcıyı kullanır ve ses eklerinin oynatma ilerlemesini eşitler.",
+      toolbars: "ARAÇ ÇUBUKLARI",
+      readingNavigation: "OKUMA GEZİNTİSİ",
+      showReadingRail: "Okuma gezintisini göster",
       title: "Okuma",
       text: "METİN",
-      autoHideToolbar: "Araç çubuğunu otomatik gizle",
+      autoHideToolbar: "Araç çubuklarını otomatik gizle/göster",
       font: "Yazı tipi",
       systemFont: "Sistem",
       sansSerif: "Sans-serif",
@@ -313,6 +393,8 @@ export default {
       reset: "Sıfırla",
     },
     ai: {
+      required: "{{field}} zorunludur",
+      invalidBaseUrl: "Geçerli bir HTTP veya HTTPS adresi girin",
       title: "AI",
       description:
         "Şu anda yalnızca OpenAI ve OpenAI uyumlu API'ler desteklenmektedir",

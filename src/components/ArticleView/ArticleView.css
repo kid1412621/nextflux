@@ -1,104 +1,156 @@
 @reference "../../index.css";
 
+.action-buttons {
+  transition: transform 180ms ease;
+}
 
-.article-content, .article-title {
+.action-buttons[data-hidden="true"] {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+/* Keyboard navigation restores the toolbar without moving the article. */
+.action-buttons:focus-within {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+html[data-reduced-motion="true"] .action-buttons {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-buttons {
+    transition: none;
+  }
+}
+
+.article-content,
+.article-title {
   @apply break-words;
   word-break: break-word;
 }
 
-.article-content *:not(.plyr__tooltip) {
-  @apply max-w-full;
+.article-content.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-kbd: var(--foreground);
+  --tw-prose-kbd-shadows: var(--border);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
 }
 
-.article-content audio {
-  @apply hidden;
+.article-content *:not(.article-media-player, .article-media-player *) {
+  @apply max-w-full;
 }
 
 .article-content li,
 .article-content p {
-  @apply my-4!
+  @apply my-4!;
 }
 
 .article-content img {
-  @apply my-0!
+  @apply my-0!;
 }
 
 /* 文章标题链接样式 */
 .article-title a {
-  @apply text-foreground font-medium no-underline
+  @apply text-foreground font-medium no-underline;
 }
 
 /* 文章内容链接样式 */
 .article-content a {
-  @apply border-b-[1px] border-dotted border-accent no-underline transition-colors text-accent
+  @apply border-b-[1px] border-dotted border-primary no-underline transition-colors text-primary;
 }
 
 /*表格*/
 .article-content td {
-  @apply text-foreground text-sm
+  @apply text-foreground text-sm;
 }
 
 /*code 相关样式 */
 .article-content code:not(pre code) {
-  @apply whitespace-pre-wrap before:content-none after:content-none border font-medium font-mono dark:text-muted rounded text-muted bg-background dark:bg-background/80 px-1.5 py-0.5
+  @apply whitespace-pre-wrap before:content-none after:content-none border font-medium font-mono rounded text-foreground bg-muted px-1.5 py-0.5;
+}
+
+.article-content pre {
+  @apply overflow-x-auto;
 }
 
 .article-content pre code {
-  @apply whitespace-pre md:whitespace-pre-wrap;
+  @apply whitespace-pre;
 }
 
-
-/*https://github.com/shikijs/shiki/issues/3*/
-.line-numbers code {
-  counter-increment: step 0;
-  counter-reset: step;
+.article-content .line-numbers pre {
+  display: flex;
+  align-items: flex-start;
+  padding-left: 0;
 }
 
-.line-numbers code .line::before {
-  content: counter(step);
-  counter-increment: step;
-  display: inline-block;
-  margin-right: 1.5rem;
+.article-content .line-numbers pre code {
+  flex: none;
+  max-width: none;
+}
+
+.code-line-numbers {
+  @apply bg-muted text-muted-foreground;
+  position: sticky;
+  left: 0;
+  flex: none;
+  padding-left: 1em;
+  padding-right: 1.5rem;
+  min-width: calc(3ch + 2.5rem);
   text-align: right;
-  width: 1rem;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
 }
 
 .article-content blockquote > p {
-  @apply before:content-none after:content-none
+  @apply before:content-none after:content-none;
 }
 
 .article-content figure {
-  @apply my-4 w-auto!
+  @apply my-4 w-auto!;
 }
 
-iframe {
-  @apply aspect-video border-none! h-auto w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5
+iframe:not(.article-media-player iframe) {
+  @apply aspect-video border-none! h-auto w-[calc(100%+2.5rem)]! max-w-[calc(100%+2.5rem)]! -mx-5;
 }
 
 blockquote {
-  @apply not-italic!
+  @apply not-italic!;
 }
 
 figcaption {
-  @apply italic!
+  @apply italic!;
 }
 
-/*代码主题跟随系统当前使用主题*/
-.shiki {
-  @apply shadow-custom
+.article-content .code-block pre {
+  @apply bg-muted text-foreground shadow-custom;
 }
 
-html[class$="dark"] .shiki,
-html[class$="dark"] .shiki span,
-div.force-dark-code-theme .shiki,
-div.force-dark-code-theme .shiki span {
-  background-color: var(--shiki-dark-bg) !important;
-  color: var(--shiki-dark) !important;
+.article-content .code-block pre code {
+  color: inherit;
 }
 
 /*image gallery*/
 .PhotoView-Slider__BannerWrap {
-  @apply pt-safe-or-4 px-safe-or-4 h-auto flex-row-reverse
+  @apply pt-safe-or-4 px-safe-or-4 h-auto flex-row-reverse;
 }
 
 /*图片计数显示*/
@@ -117,16 +169,17 @@ div.force-dark-code-theme .shiki span {
 }
 
 .PhotoView-Slider__BannerRight svg {
-  @apply size-8
+  @apply size-8;
 }
 
 /*导航按钮容器*/
-.PhotoView-Slider__ArrowLeft, .PhotoView-Slider__ArrowRight {
-  @apply hidden w-auto px-safe-offset-4 md:flex animate-in fade-in zoom-in
+.PhotoView-Slider__ArrowLeft,
+.PhotoView-Slider__ArrowRight {
+  @apply hidden w-auto px-safe-offset-4 md:flex animate-in fade-in zoom-in;
 }
 
 /*导航按钮*/
-.PhotoView-Slider__ArrowLeft svg, .PhotoView-Slider__ArrowRight svg {
+.PhotoView-Slider__ArrowLeft svg,
+.PhotoView-Slider__ArrowRight svg {
   @apply bg-black/50 rounded-full p-2 size-4;
 }
-

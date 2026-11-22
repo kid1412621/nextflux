@@ -7,10 +7,6 @@ export default {
   theme: {
     extend: {
       colors: {},
-      screens: {
-        // 自定义 display-mode: standalone 媒体查询
-        standalone: { raw: "(display-mode: standalone)" },
-      },
       boxShadow: {
         custom: "var(--shadow-custom)",
         "custom-md": "var(--shadow-custom-md)",
@@ -24,13 +20,13 @@ export default {
             opacity: "0.3",
           },
           to: {
-            height: "var(--radix-collapsible-content-height)",
+            height: "var(--collapsible-panel-height)",
             opacity: "1",
           },
         },
         "collapsible-up": {
           from: {
-            height: "var(--radix-collapsible-content-height)",
+            height: "var(--collapsible-panel-height)",
             opacity: "1",
           },
           to: {

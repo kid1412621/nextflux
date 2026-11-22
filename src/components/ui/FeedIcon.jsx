@@ -3,8 +3,8 @@ import { Rss } from "lucide-react";
 import { settingsState } from "@/stores/settingsStore";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";
-import { getFeedIcon, setFeedIcon } from "@/db/storage";
-import minifluxAPI from "@/api/miniflux";
+import { iconService } from "@/services/iconService.js";
+import { reportError } from "@/lib/errors.js";
 
 const FeedIcon = ({ feedId, url = null }) => {
   const { feedIconShape, useGrayIcon } = useStore(settingsState);
@@ -28,22 +28,16 @@ const FeedIcon = ({ feedId, url = null }) => {
   }, [getDomain]);
 
   useEffect(() => {
+    let cancelled = false;
+    setError(false);
+    setIsBlurry(false);
+    setIsLoading(true);
+    setIconData(null);
     const loadIcon = async () => {
       try {
         if (feedId) {
-          let icon = await getFeedIcon(feedId);
-
-          if (!icon || Date.now() - icon.updatedAt > 7 * 24 * 60 * 60 * 1000) {
-            const newIcon = await minifluxAPI.getIconByFeedId(feedId);
-            if (newIcon) {
-              await setFeedIcon({
-                feedId,
-                mime_type: newIcon.mime_type,
-                data: newIcon.data,
-              });
-              icon = newIcon;
-            }
-          }
+          const icon = await iconService.load(feedId);
+          if (cancelled) return;
 
           if (icon) {
             setIconData(`data:${icon.data}`);
@@ -59,12 +53,16 @@ const FeedIcon = ({ feedId, url = null }) => {
 
         setError(true);
       } catch (err) {
-        console.error("加载订阅源图标失败:", err);
+        if (cancelled) return;
+        reportError(err, "feedIcon.load");
         setError(true);
       }
     };
 
     loadIcon();
+    return () => {
+      cancelled = true;
+    };
   }, [feedId, url, faviconUrl]);
 
   // 处理图片加载错误

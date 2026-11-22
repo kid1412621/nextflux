@@ -1,51 +1,52 @@
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LiquidGlass } from "@/components/ui/liquid-glass";
+import { audioDock } from "@/stores/audioStore.js";
 import { filter } from "@/stores/articlesStore";
-import { CircleDot, Star, Text } from "lucide-react";
-import { Tabs } from "@heroui/react";
+import { Circle, Star, Text } from "lucide-react";
 import { useStore } from "@nanostores/react";
 import { useTranslation } from "react-i18next";
-
 export default function ArticleListFooter() {
   const { t } = useTranslation();
   const $filter = useStore(filter);
-
   return (
     <div className="article-list-footer absolute bottom-0 w-full bg-transparent flex flex-col items-center justify-center pb-4 standalone:pb-safe-or-4">
+      <div
+        ref={audioDock.set}
+        className="absolute inset-x-0 bottom-full mb-3"
+      />
       <Tabs
-        selectedKey={$filter}
-        onSelectionChange={(value) => {
+        aria-label="filter"
+        value={$filter}
+        onValueChange={(value) => {
           filter.set(value);
         }}
-        aria-label="filter"
-        variant="primary"
       >
-        <Tabs.ListContainer>
-          <Tabs.List
+        <LiquidGlass>
+          <TabsList
+            variant="pill"
             aria-label="filter"
-            className="bg-background/90 backdrop-blur-md shadow-custom w-fit *:h-6 *:w-fit *:px-3 *:text-xs *:font-normal *:data-[selected=true]:text-accent-foreground"
+            className="bg-transparent w-fit *:h-6 *:w-fit *:px-3 *:text-xs *:font-normal"
           >
-            <Tabs.Tab id="starred">
-              <Tabs.Indicator className="bg-accent" />
-              <div className="flex items-center space-x-1.5">
-                <Star className="size-3 fill-current" />
+            <TabsTrigger value="starred">
+              <div className="flex items-center gap-1.5">
+                <Star className="size-3 fill-current" strokeWidth={0} />
                 <span>{t("articleList.starred")}</span>
               </div>
-            </Tabs.Tab>
-            <Tabs.Tab id="unread">
-              <Tabs.Indicator className="bg-accent" />
-              <div className="flex items-center space-x-1.5">
-                <CircleDot className="size-3 p-px fill-current" />
+            </TabsTrigger>
+            <TabsTrigger value="unread">
+              <div className="flex items-center gap-1.5">
+                <Circle className="size-3 p-px fill-current" strokeWidth={0} />
                 <span>{t("articleList.unread")}</span>
               </div>
-            </Tabs.Tab>
-            <Tabs.Tab id="all">
-              <Tabs.Indicator className="bg-accent" />
-              <div className="flex items-center space-x-1.5">
+            </TabsTrigger>
+            <TabsTrigger value="all">
+              <div className="flex items-center gap-1.5">
                 <Text strokeWidth={4} className="size-3" />
                 <span>{t("articleList.all")}</span>
               </div>
-            </Tabs.Tab>
-          </Tabs.List>
-        </Tabs.ListContainer>
+            </TabsTrigger>
+          </TabsList>
+        </LiquidGlass>
       </Tabs>
     </div>
   );

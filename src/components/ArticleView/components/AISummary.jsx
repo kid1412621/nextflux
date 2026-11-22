@@ -1,12 +1,12 @@
+import { CloseButton } from "@/components/ui/close-button";
+import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@nanostores/react";
 import { aiSummaries, clearSummary } from "@/stores/aiStore.js";
-import { CloseButton, Spinner } from "@heroui/react";
 import { Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BorderBeam from "border-beam";
 import { currentThemeMode } from "@/stores/themeStore.js";
-
 const TICK_MS = 16; // ~60fps
 const CHARS_STREAMING = 5; // 流式输出中每帧显示字符数
 const CHARS_CATCHUP = 24; // 输出结束后快速追赶
@@ -16,7 +16,6 @@ export default function AISummary({ articleId }) {
   const $aiSummaries = useStore(aiSummaries);
   const $currentThemeMode = useStore(currentThemeMode);
   const state = $aiSummaries[articleId];
-
   const [displayedText, setDisplayedText] = useState("");
   const stateRef = useRef(state);
 
@@ -29,12 +28,11 @@ export default function AISummary({ articleId }) {
   useEffect(() => {
     setDisplayedText("");
   }, [articleId]);
-
   useEffect(() => {
     if (state?.loading && state?.summary === "") {
       setDisplayedText("");
     }
-  }, [state?.loading]);
+  }, [state?.loading, state?.summary]);
 
   // 逐字追赶定时器，只随 articleId 重建
   useEffect(() => {
@@ -50,13 +48,10 @@ export default function AISummary({ articleId }) {
     }, TICK_MS);
     return () => clearInterval(timer);
   }, [articleId]);
-
   if (!state) return null;
-
   const isTyping =
     state.loading || displayedText.length < (state.summary?.length ?? 0);
   const isWaiting = state.loading && !state.summary;
-
   return (
     <BorderBeam
       active={isWaiting || isTyping}
@@ -66,33 +61,34 @@ export default function AISummary({ articleId }) {
       <div className="ai-summary p-4 bg-background rounded-2xl">
         <div className="flex gap-2 h-10">
           <div className="flex items-center gap-1 h-auto">
-            <Sparkles className="size-4 text-accent shrink-0" />
-            <span className="text-sm font-medium text-accent">
+            <Sparkles className="size-4 text-primary shrink-0" />
+            <span className="text-sm font-medium text-primary">
               {t("articleView.aiSummary")}
             </span>
           </div>
           {!isTyping && (
             <CloseButton
-              onPress={() => clearSummary(articleId)}
               className="ml-auto"
+              variant="ghost"
+              onClick={() => clearSummary(articleId)}
             />
           )}
         </div>
 
         {isWaiting && (
-          <div className="flex items-center gap-2 text-sm text-muted py-2">
-            <Spinner size="sm" color="current" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+            <Spinner />
             <span>{t("articleView.aiSummaryGenerating")}</span>
           </div>
         )}
 
-        {state.error && <p className="text-sm text-danger">{state.error}</p>}
+        {state.error && <p className="text-sm text-destructive">{state.error}</p>}
 
         {displayedText && (
-          <div className="text-sm text-muted leading-relaxed">
+          <div className="text-sm text-muted-foreground leading-relaxed">
             {displayedText}
             {isTyping && (
-              <span className="inline-block w-0.5 h-4 bg-accent ml-0.5 animate-pulse align-middle" />
+              <span className="inline-block w-0.5 h-4 bg-primary ml-0.5 animate-pulse align-middle" />
             )}
           </div>
         )}

@@ -1,3 +1,16 @@
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { useEffect, Fragment } from "react";
 import { settingsState } from "@/stores/settingsStore";
 import {
@@ -7,10 +20,13 @@ import {
   AlignStartVertical,
   CaseSensitive,
   ListOrdered,
+  ListTree,
   SquareCode,
+  PanelTop,
   Type,
   UnfoldHorizontal,
   UnfoldVertical,
+  Video,
 } from "lucide-react";
 import { useStore } from "@nanostores/react";
 import {
@@ -19,19 +35,14 @@ import {
   SliderItem,
   SwitchItem,
 } from "@/components/ui/settingItem.jsx";
-import { Button, Separator, Dropdown, Header, Label } from "@heroui/react";
 import { resetSettings } from "@/stores/settingsStore.js";
 import { useTranslation } from "react-i18next";
 import SettingIcon from "@/components/ui/SettingIcon";
 import { loadFonts, FONT_CATEGORIES, SYSTEM_FONTS } from "@/lib/fontLoader";
 import { updateSettings } from "@/stores/settingsStore.js";
-import { ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
 
 // 字体选择器组件
 function FontSelector({ label, icon, settingName, settingValue }) {
-  const [selected, setSelected] = useState(new Set([settingValue]));
-
   // 打开时预加载所有字体
   useEffect(() => {
     const allFonts = Object.values(FONT_CATEGORIES).flatMap((cat) =>
@@ -39,11 +50,6 @@ function FontSelector({ label, icon, settingName, settingValue }) {
     );
     loadFonts(allFonts).catch(() => {});
   }, []);
-
-  // 同步选中状态
-  useEffect(() => {
-    setSelected(new Set([settingValue]));
-  }, [settingValue]);
 
   // 获取当前选中字体的名称
   const getSelectedFontName = () => {
@@ -72,95 +78,72 @@ function FontSelector({ label, icon, settingName, settingValue }) {
     }
     return "Aa";
   };
-
   const handleSelectionChange = (keys) => {
-    const value = keys.currentKey;
+    const value = keys;
     if (value) {
-      setSelected(new Set([value]));
-      updateSettings({ [settingName]: value });
+      updateSettings({
+        [settingName]: value,
+      });
     }
   };
-
   return (
-    <div className="flex justify-between items-center gap-2 bg-default/60 dark:bg-default/30 px-2.5 py-2">
+    <div className="flex justify-between items-center gap-2 bg-secondary/60 dark:bg-secondary/30 px-2.5 py-2">
       <div className="flex items-center gap-2">
         {icon}
         <div className="text-sm text-foreground">{label}</div>
       </div>
-      <Dropdown>
-        <Button
-          variant="tertiary"
-          size="sm"
-          className="text-muted h-8 min-w-[100px]"
-        >
-          <span className="truncate">{getSelectedFontName()}</span>
+      <Select value={settingValue} onValueChange={handleSelectionChange}>
+        <SelectTrigger size="sm" aria-label={label} className="min-w-[100px]">
+          <SelectValue>{getSelectedFontName()}</SelectValue>
           <span
-            className="text-muted/60 ml-1"
-            style={{
-              fontFamily: `${settingValue}, system-ui, sans-serif`,
-            }}
+            className="text-muted-foreground"
+            style={{ fontFamily: `${settingValue}, system-ui, sans-serif` }}
           >
             {getSelectedFontPreview()}
           </span>
-          <ChevronsUpDown className="size-4 shrink-0 text-muted opacity-60" />
-        </Button>
-
-        <Dropdown.Popover className="max-h-[300px] overflow-y-auto">
-          <Dropdown.Menu
-            aria-label="Font selection"
-            selectedKeys={selected}
-            selectionMode="single"
-            onSelectionChange={handleSelectionChange}
-          >
-            <Dropdown.Section>
-              <Header>System</Header>
-              {SYSTEM_FONTS.map((font) => (
-                <Dropdown.Item
-                  key={font.value}
-                  id={font.value}
-                  textValue={font.name}
-                >
-                  <Dropdown.ItemIndicator />
-                  <Label>{font.name}</Label>
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Section>
-            <Separator />
-            {Object.entries(FONT_CATEGORIES).map(
-              ([categoryKey, category], index) => (
-                <Fragment key={categoryKey}>
-                  <Dropdown.Section>
-                    <Header>{category.label}</Header>
-                    {category.fonts.map((font) => (
-                      <Dropdown.Item
-                        key={font.value}
-                        id={font.value}
-                        textValue={font.name}
+        </SelectTrigger>
+        <SelectContent
+          variant="glass"
+          className="max-h-[300px]"
+          alignItemWithTrigger={false}
+        >
+          <SelectGroup>
+            <SelectLabel>System</SelectLabel>
+            {SYSTEM_FONTS.map((font) => (
+              <SelectItem key={font.value} value={font.value}>
+                {font.name}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+          <SelectSeparator />
+          {Object.entries(FONT_CATEGORIES).map(
+            ([categoryKey, category], index) => (
+              <Fragment key={categoryKey}>
+                <SelectGroup>
+                  <SelectLabel>{category.label}</SelectLabel>
+                  {category.fonts.map((font) => (
+                    <SelectItem key={font.value} value={font.value}>
+                      <span
+                        style={{
+                          fontFamily: `${font.value}, system-ui, sans-serif`,
+                        }}
                       >
-                        <Dropdown.ItemIndicator />
-                        <Label
-                          style={{
-                            fontFamily: `${font.value}, system-ui, sans-serif`,
-                          }}
-                        >
-                          {font.name}
-                        </Label>
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Section>
-                  {index < Object.keys(FONT_CATEGORIES).length - 1 && (
-                    <Separator />
-                  )}
-                </Fragment>
-              ),
-            )}
-          </Dropdown.Menu>
-        </Dropdown.Popover>
-      </Dropdown>
+                        {font.name}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+                {index < Object.keys(FONT_CATEGORIES).length - 1 && (
+                  <SelectSeparator />
+                )}
+              </Fragment>
+            ),
+          )}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
-
 export default function Readability() {
   const {
     lineHeight,
@@ -172,9 +155,11 @@ export default function Readability() {
     titleAlignType,
     showLineNumbers,
     forceDarkCodeTheme,
+    showReadingRail,
+    autoHideToolbar,
+    useThirdPartyMediaPlayer,
   } = useStore(settingsState);
   const { t } = useTranslation();
-
   return (
     <>
       <ItemWrapper title={t("settings.readability.articleTitle")}>
@@ -188,8 +173,14 @@ export default function Readability() {
           settingName="titleAlignType"
           settingValue={titleAlignType}
           options={[
-            { value: "left", icon: <AlignLeft className="size-4" /> },
-            { value: "center", icon: <AlignCenter className="size-4" /> },
+            {
+              value: "left",
+              icon: <AlignLeft className="size-4" />,
+            },
+            {
+              value: "center",
+              icon: <AlignCenter className="size-4" />,
+            },
           ]}
         />
         <Separator />
@@ -272,6 +263,45 @@ export default function Readability() {
           step={5}
         />
       </ItemWrapper>
+      <ItemWrapper title={t("settings.readability.toolbars")}>
+        <SwitchItem
+          label={t("settings.readability.autoHideToolbar")}
+          icon={
+            <SettingIcon variant="blue">
+              <PanelTop />
+            </SettingIcon>
+          }
+          settingName="autoHideToolbar"
+          settingValue={autoHideToolbar}
+        />
+      </ItemWrapper>
+      <ItemWrapper title={t("settings.readability.readingNavigation")}>
+        <SwitchItem
+          label={t("settings.readability.showReadingRail")}
+          icon={
+            <SettingIcon variant="green">
+              <ListTree />
+            </SettingIcon>
+          }
+          settingName="showReadingRail"
+          settingValue={showReadingRail}
+        />
+      </ItemWrapper>
+      <ItemWrapper title={t("settings.readability.media")}>
+        <SwitchItem
+          label={t("settings.readability.useThirdPartyMediaPlayer")}
+          description={t(
+            "settings.readability.useThirdPartyMediaPlayerDescription",
+          )}
+          icon={
+            <SettingIcon variant="blue">
+              <Video />
+            </SettingIcon>
+          }
+          settingName="useThirdPartyMediaPlayer"
+          settingValue={useThirdPartyMediaPlayer}
+        />
+      </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.codeBlock")}>
         <SwitchItem
           label={t("settings.appearance.showLineNumbers")}
@@ -296,10 +326,9 @@ export default function Readability() {
         />
       </ItemWrapper>
       <Button
-        fullWidth
-        variant="danger"
-        onPress={resetSettings}
-        className="shrink-0"
+        variant="destructive"
+        onClick={resetSettings}
+        className={cn("w-full", "shrink-0")}
       >
         {t("settings.readability.reset")}
       </Button>

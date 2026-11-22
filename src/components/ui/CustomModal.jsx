@@ -1,58 +1,95 @@
-import { useIsMobile } from "@/hooks/use-mobile.jsx";
-import { Drawer, Modal, cn, Button } from "@heroui/react";
+import { useIsMedium } from "@/hooks/use-mobile.jsx";
+import { cn } from "@/lib/utils";
+import { CloseButton } from "@/components/ui/close-button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
 
 export default function CustomModal({
   open,
   onOpenChange,
+  onOpenChangeComplete,
   title,
   fixedHeight = false,
   children,
   footer,
 }) {
-  const { isMedium } = useIsMobile();
+  const isMedium = useIsMedium();
+  const handleOpenChange = (nextOpen) => {
+    if (!nextOpen) onOpenChange(false);
+  };
   if (isMedium) {
     return (
-      <Drawer>
-        <Button className="hidden" />
-        <Drawer.Backdrop isOpen={open} onOpenChange={onOpenChange}>
-          <Drawer.Content>
-            <Drawer.Dialog className={cn("p-0", fixedHeight && "h-4/5")}>
-              <Drawer.Handle className="p-1" />
-              <Drawer.CloseTrigger />
-              <Drawer.Header className="px-4 pt-1 pb-4">
-                <Drawer.Heading>{title}</Drawer.Heading>
-              </Drawer.Header>
-              <Drawer.Body className="m-0 p-0">{children}</Drawer.Body>
-              {footer && (
-                <Drawer.Footer className="bg-background dark:bg-transparent border-t p-4 m-0">
-                  {footer}
-                </Drawer.Footer>
-              )}
-            </Drawer.Dialog>
-          </Drawer.Content>
-        </Drawer.Backdrop>
+      <Drawer
+        open={open}
+        onOpenChange={handleOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+        showSwipeHandle
+      >
+        <DrawerContent
+          className={cn("max-h-[85dvh]", fixedHeight && "h-[80dvh]")}
+        >
+          <DrawerHeader className="px-4 pb-4 text-left">
+            <DrawerTitle>{title}</DrawerTitle>
+            <DrawerClose
+              render={<CloseButton className="absolute top-3 right-3" />}
+            />
+          </DrawerHeader>
+          <ScrollArea
+            className="min-h-0 flex-1"
+            viewportClassName="overscroll-contain"
+          >
+            {children}
+          </ScrollArea>
+          {footer && (
+            <DrawerFooter className="grid min-w-0 grid-flow-col auto-cols-fr [&>button]:min-w-0 [&>button]:h-auto [&>button]:min-h-9 [&>button]:whitespace-normal border-t p-4 pb-safe-or-4">
+              {footer}
+            </DrawerFooter>
+          )}
+        </DrawerContent>
       </Drawer>
     );
   }
   return (
-    <Modal>
-      <Button className="hidden" />
-      <Modal.Backdrop isOpen={open} onOpenChange={onOpenChange}>
-        <Modal.Container>
-          <Modal.Dialog className={cn("p-0", fixedHeight && "h-2/3")}>
-            <Modal.Header>
-              <Modal.Heading className="p-4">{title}</Modal.Heading>
-            </Modal.Header>
-            <Modal.Body className="m-0 p-0">{children}</Modal.Body>
-            {footer && (
-              <Modal.Footer className="bg-background dark:bg-transparent border-t p-4 m-0">
-                {footer}
-              </Modal.Footer>
-            )}
-            <Modal.CloseTrigger />
-          </Modal.Dialog>
-        </Modal.Container>
-      </Modal.Backdrop>
-    </Modal>
+    <Dialog
+      open={open}
+      onOpenChange={handleOpenChange}
+      onOpenChangeComplete={onOpenChangeComplete}
+    >
+      <DialogContent
+        className={cn(
+          "flex max-h-[85dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg",
+          fixedHeight && "h-[66dvh]",
+        )}
+      >
+        <DialogHeader className="p-4">
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        <ScrollArea
+          className="min-h-0 flex-1"
+          viewportClassName="overscroll-contain"
+        >
+          {children}
+        </ScrollArea>
+        {footer && (
+          <DialogFooter className="m-0 grid min-w-0 grid-flow-col auto-cols-fr [&>button]:min-w-0 [&>button]:h-auto [&>button]:min-h-9 [&>button]:whitespace-normal rounded-none border-t p-4">
+            {footer}
+          </DialogFooter>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

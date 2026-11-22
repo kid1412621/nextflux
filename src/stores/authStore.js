@@ -1,111 +1,159 @@
 import { persistentAtom } from "@nanostores/persistent";
-import { normalizeServerUrl } from "@/lib/url";
-import { stopAutoSync } from "./syncStore";
-import { clearAllData } from "@/db/storage";
+import { atom, computed } from "nanostores";
+import { normalizeServerUrl } from "../lib/url.js";
+import { reportError } from "../lib/errors.js";
+import {
+  basicAuthorization,
+  emptyAccounts,
+  getActiveAccount,
+  isAuthenticated,
+  migrateLegacyAuth,
+  saveAccount,
+  removeAccount,
+} from "../domain/auth/accounts.js";
+import {
+  cleanupAccountData,
+  LOGOUT_NOTICE_KEY,
+} from "../services/accountCleanup.js";
 
-const defaultValue = {
-  serverUrl: "",
-  username: "",
-  password: "",
-  userId: "",
-  token: "",
-  authType: "basic",
-};
-
-export const authState = persistentAtom("auth", defaultValue, {
+export const accountsState = persistentAtom("accounts:v1", emptyAccounts, {
   encode: JSON.stringify,
-  decode: (str) => {
+  decode: (value) => {
     try {
-      const storedValue = JSON.parse(str);
-      return {
-        ...defaultValue,
-        ...storedValue,
-        serverUrl: storedValue.serverUrl
-          ? normalizeServerUrl(storedValue.serverUrl)
-          : defaultValue.serverUrl,
-      };
+      const state = JSON.parse(value);
+      return Array.isArray(state?.accounts) ? state : emptyAccounts;
     } catch {
-      return defaultValue;
+      return emptyAccounts;
     }
   },
 });
 
-// 登录方法
+// Adopt the existing cache only for its original owner.
+if (!localStorage.getItem("accounts:v1")) {
+  try {
+    const legacy = JSON.parse(localStorage.getItem("auth"));
+    accountsState.set(migrateLegacyAuth(legacy));
+  } catch {
+    accountsState.set(emptyAccounts);
+  }
+}
+localStorage.removeItem("auth");
+
+export const authState = computed(accountsState, getActiveAccount);
+// The database and requests stay bound to this session until the page reloads.
+export const sessionAccount = authState.get();
+export const sessionEnding = atom(false);
+let transitioning = false;
+let sessionStopped = false;
+let endingSession = false;
+let logoutPromise = null;
+
+function stopSession() {
+  if (sessionStopped) return;
+  sessionStopped = true;
+  sessionEnding.set(true);
+  window.dispatchEvent(new Event("nextflux:logout"));
+}
+
+function reloadSession(auth, force = false) {
+  if (
+    endingSession ||
+    transitioning ||
+    (!force && JSON.stringify(auth) === JSON.stringify(sessionAccount))
+  )
+    return;
+  transitioning = true;
+  stopSession();
+  window.location.replace(isAuthenticated(auth) ? "/" : "/login");
+}
+authState.listen((auth) => reloadSession(auth));
+
 export async function login(serverUrl, username, password, token) {
   try {
+    if (endingSession || transitioning) throw new Error("Session is ending");
     const normalizedServerUrl = normalizeServerUrl(serverUrl);
-    let headers = {};
-    if (token) {
-      headers["X-Auth-Token"] = token;
-    } else {
-      const basicToken = btoa(
-        unescape(encodeURIComponent(`${username}:${password}`)),
-      );
-      headers["Authorization"] = "Basic " + basicToken;
-    }
-
-    const response = await fetch(`${normalizedServerUrl}/v1/me`, {
-      headers,
-    });
-
+    const headers = token
+      ? { "X-Auth-Token": token }
+      : { Authorization: basicAuthorization(username, password) };
+    const response = await fetch(`${normalizedServerUrl}/v1/me`, { headers });
     if (!response.ok) {
-      console.log(response);
       throw new Error(
         response.statusText || `HTTP error! status: ${response.status}`,
       );
     }
-
     const user = await response.json();
-
-    // 保存认证信息
-    authState.set({
-      serverUrl: normalizedServerUrl,
-      username: user.username,
-      password: token ? "" : password,
-      token: token || "",
-      authType: token ? "token" : "basic",
-      userId: user.id,
-    });
-
+    if (endingSession || transitioning) throw new Error("Session is ending");
+    accountsState.set(
+      saveAccount(accountsState.get(), {
+        serverUrl: normalizedServerUrl,
+        username: user.username,
+        password: token ? "" : password,
+        token: token || "",
+        authType: token ? "token" : "basic",
+        userId: user.id,
+      }),
+    );
+    reloadSession(authState.get(), true);
     return user;
   } catch (error) {
-    console.error("登录失败:", error);
-    throw error;
+    throw reportError(error, "auth.login");
   }
 }
 
-// 处理认证失效（401 等错误），仅清除凭据，保留用户偏好设置及服务器配置
-export function handleAuthError() {
-  try {
-    stopAutoSync();
-    const currentAuth = authState.get();
-    authState.set({
-      ...currentAuth,
-      password: "",
-      token: "",
-    });
-  } catch (error) {
-    console.error("处理认证失效失败:", error);
-  }
+export function switchAccount(id) {
+  if (endingSession || transitioning) return;
+  const state = accountsState.get();
+  if (!state.accounts.some((account) => account.id === id)) return;
+  accountsState.set({ ...state, activeAccountId: id });
 }
 
-// 登出方法
-export async function logout() {
-  try {
-    // 停止自动同步
-    stopAutoSync();
+// Expired authentication keeps the account identity and cache for reauthentication.
+export function expireSession() {
+  if (endingSession || transitioning || !sessionAccount.id) return;
+  const state = accountsState.get();
+  const account = getActiveAccount(state);
+  if (JSON.stringify(account) !== JSON.stringify(sessionAccount)) return;
+  accountsState.set({
+    ...state,
+    accounts: state.accounts.map((item) =>
+      item.id === account.id ? { ...item, password: "", token: "" } : item,
+    ),
+  });
+}
 
-    const currentAuth = authState.get();
-    // 重置认证状态，保留 serverUrl 和 username 方便下次登录
-    authState.set({
-      ...defaultValue,
-      serverUrl: currentAuth?.serverUrl || "",
-      username: currentAuth?.username || "",
-    });
-
-    // 清理本地文章和分类缓存数据，绝不清除用户偏好设置 (settings / theme)
-    await clearAllData();
-  } catch (error) {
-    console.error("登出失败:", error);
-  }
+export function logout() {
+  if (logoutPromise) return logoutPromise;
+  const account = getActiveAccount(accountsState.get());
+  if (transitioning || !account.id || account.id !== sessionAccount.id)
+    return Promise.resolve();
+  endingSession = true;
+  logoutPromise = Promise.resolve().then(async () => {
+    try {
+      // Persist credential removal before stopping the current session. If this
+      // write fails, leave the session usable so the user can retry.
+      accountsState.set(removeAccount(accountsState.get(), account.id));
+    } catch (error) {
+      endingSession = false;
+      logoutPromise = null;
+      throw error;
+    }
+    stopSession();
+    let errors;
+    try {
+      errors = await cleanupAccountData(account);
+    } catch (error) {
+      errors = [error];
+    }
+    if (errors.length) {
+      for (const error of errors) reportError(error, "auth.logoutCleanup");
+      try {
+        sessionStorage.setItem(LOGOUT_NOTICE_KEY, "true");
+      } catch {
+        /* Logout still completes when sessionStorage is unavailable. */
+      }
+    }
+    endingSession = false;
+    reloadSession(authState.get(), true);
+  });
+  return logoutPromise;
 }

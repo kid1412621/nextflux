@@ -10,9 +10,9 @@ export default function About() {
       <NotFancyLogo since={2025} />
 
       {/* Made with love section */}
-      <div className="text-center text-muted px-3">
+      <div className="text-center text-muted-foreground px-3">
         Made with{" "}
-        <span className="text-danger">
+        <span className="text-destructive">
           <Heart className="size-3 fill-current inline-block" />
         </span>{" "}
         by{" "}
@@ -27,7 +27,7 @@ export default function About() {
       </div>
 
       {/* Acknowledgments section */}
-      <div className="flex flex-col gap-2 items-center px-3 pb-3 text-muted">
+      <div className="flex flex-col gap-2 items-center px-3 pb-3 text-muted-foreground">
         {t("about.acknowledgments")}
         <div className="flex flex-col gap-0.5 items-center justify-center text-sm">
           <a
@@ -47,6 +47,22 @@ export default function About() {
             HeroUI
           </a>
           <a
+            href="https://ui.shadcn.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            shadcn/ui
+          </a>
+          <a
+            href="https://videojs.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            Video.js
+          </a>
+          <a
             href="https://tailwindcss.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -61,14 +77,6 @@ export default function About() {
             className="text-primary hover:underline"
           >
             React-photo-view
-          </a>
-          <a
-            href="https://shiki.matsu.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            Shiki
           </a>
           <a
             href="https://virtuoso.dev"

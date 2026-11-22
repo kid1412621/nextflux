@@ -1,5 +1,36 @@
 export default {
+  pwa: {
+    updateAvailable: "Une nouvelle version de Nextflux est disponible.",
+    reload: "Recharger et mettre à jour",
+    later: "Plus tard",
+    updateFailed: "Échec de la mise à jour. Reconnectez-vous et réessayez.",
+  },
+  audioPlayer: {
+    inline: "Lecteur audio de l’article",
+    playing: "En lecture",
+    paused: "En pause",
+    seek: "Position de lecture",
+    inPlayer: "Dans votre lecteur",
+    label: "Lecteur audio",
+    listen: "Écouter",
+    open: "Ouvrir le lecteur",
+    expand: "Développer le lecteur",
+    collapse: "Réduire le lecteur",
+    play: "Lire",
+    pause: "Pause",
+    close: "Arrêter et fermer",
+    article: "Revenir à l’article",
+    backward: "Reculer de 15 secondes",
+    forward: "Avancer de 30 secondes",
+    playFailed: "La lecture n’a pas démarré. Appuyez sur Lire pour réessayer.",
+    mediaFailed:
+      "Impossible de charger l’audio. Vérifiez la source ou rouvrez le lecteur.",
+  },
   common: {
+    resizeFeeds: "Redimensionner la barre des flux",
+    resizeArticles: "Redimensionner la liste des articles",
+    newArticles: "{{count}} nouveaux articles",
+    backgroundSync: "Synchronisation · {{count}} en cache",
     cancel: "Annuler",
     confirm: "Confirmer",
     save: "Enregistrer",
@@ -88,12 +119,17 @@ export default {
     categoryNamePlaceholder: "Veuillez entrer le titre de la catégorie",
     categoryNameRequired: "Veuillez entrer le titre de la catégorie",
     profile: {
+      switchAccount: "Changer de compte",
+      addAccount: "Ajouter un compte",
+      addAnotherAccount: "Ajouter un autre compte",
+      currentAccount: "Compte actuel",
+
       about: "À propos",
       settings: "Paramètres",
       openMiniflux: "Ouvrir Miniflux",
       logout: "Déconnexion",
       logoutConfirmDescription:
-        "Êtes-vous sûr de vouloir vous déconnecter ? Toutes les données locales en cache seront supprimées.",
+        "Déconnecter ce compte ? Ses identifiants et son cache local seront supprimés. Les autres comptes et les paramètres seront conservés.",
     },
     shortcuts: {
       title: "Raccourcis",
@@ -140,6 +176,15 @@ export default {
     },
   },
   articleView: {
+    fillViewport: "Passer en vue complète",
+    restoreViewport: "Quitter la vue complète",
+    readingNavigation: "Navigation de lecture",
+    jumpToSection: "Aller à la section {{index}} : {{title}}",
+    notFoundTitle: "Article introuvable",
+    notFoundDescription:
+      "Cet article n’a peut-être pas encore été synchronisé ou a été supprimé.",
+    backToList: "Retour à la liste",
+
     imageError: "Erreur de chargement de l'image",
     videoError: "Erreur de chargement de la vidéo",
     stopPlay: "STOP",
@@ -204,6 +249,11 @@ export default {
     open: "Ouvrir",
   },
   auth: {
+    logoutFailed:
+      "Déconnexion impossible : les identifiants enregistrés n’ont pas pu être supprimés. Vérifiez les autorisations de stockage du navigateur et réessayez.",
+    logoutCleanupWarning:
+      "Vous êtes déconnecté, mais la suppression de certaines données locales n’a pas pu être confirmée. Fermez les autres onglets de l’application et effacez les données de ce site.",
+    toggleCredentialVisibility: "Afficher ou masquer les identifiants",
     login: "Connexion à votre serveur",
     username: "Nom d'utilisateur",
     password: "Mot de passe",
@@ -221,6 +271,34 @@ export default {
     or: "Ou continuer avec",
   },
   settings: {
+    backup: {
+      title: "Données",
+      subscriptions: "Sauvegarde des abonnements",
+      opmlDescription:
+        "Exportez tous les abonnements et catégories du serveur, y compris les flux masqués.",
+      exportOpml: "Exporter OPML",
+      requiresConnection:
+        "Connectez-vous au serveur Miniflux pour exporter les abonnements.",
+      preferences: "Sauvegarde des paramètres",
+      settingsDescription:
+        "Sauvegardez les préférences de lecture, apparence, langue et IA. Les identifiants et clés API sont exclus.",
+      exportSettings: "Sauvegarder les paramètres",
+      restoreSettings: "Restaurer les paramètres",
+      migrationDescription:
+        "Ces sauvegardes excluent les articles, états de lecture, favoris, règles avancées des flux et configurations de services tiers. Pour migrer ces données, sauvegardez la base de données Miniflux.",
+      backupGuide: "Guide officiel de sauvegarde Miniflux",
+      restoreConfirm:
+        "Appliquer les paramètres de « {{filename}} » et remplacer les paramètres correspondants ? Les identifiants, clés API, abonnements et articles du serveur restent inchangés.",
+      exportSuccess: "Fichier de sauvegarde créé",
+      exportFailed: "Échec de l’export. Réessayez.",
+      restoreSuccess: "Paramètres restaurés",
+      restoreFailed:
+        "Échec de la restauration. Paramètres précédents rétablis.",
+      invalidBackup: "Sauvegarde Nextflux ou valeurs de paramètres invalides.",
+      unsupportedVersion:
+        "Version de sauvegarde non prise en charge. Mettez Nextflux à jour.",
+      fileTooLarge: "La taille maximale du fichier est de 1 Mo.",
+    },
     title: "Paramètres",
     general: {
       title: "Général",
@@ -245,7 +323,8 @@ export default {
       sortByCreateDate: "Par date de création",
       markAsReadOnScroll: "Marquer comme lu lors du défilement",
       showUnreadByDefault: "Afficher les articles non lus par défaut",
-      showUnreadByDefaultDescription: "Actualisez la page pour appliquer les modifications",
+      showUnreadByDefaultDescription:
+        "Actualisez la page pour appliquer les modifications",
     },
     appearance: {
       title: "Apparence",
@@ -259,7 +338,6 @@ export default {
       themes: {
         light: "Clair",
         stone: "Pierre",
-        leaf: "Feuille",
         dark: "Sombre",
         "nord-dark": "Nord",
       },
@@ -268,21 +346,17 @@ export default {
       moreSpace: "Plus d'espace",
       normal: "Normal",
       LargerText: "Texte plus grand",
-      borderRadius: "Rayon de la bordure",
       favicons: "FAVICONS",
       shape: "Forme",
       circle: "Cercle",
       square: "Carré",
       grayscale: "Favicons en niveaux de gris",
-      sidebar: "BARRE LATÉRALE",
-      floatingSidebar: "Barre latérale flottante",
       articleList: "LISTE D'ARTICLES",
       imagePreviews: "Aperçus d'image",
       none: "Aucun",
       small: "Petit",
       large: "Grand",
       showFavicon: "Afficher les favicons",
-      showIndicator: "Afficher le curseur de défilement",
       titleLines: "Lignes de titre",
       textPreviewLines: "Lignes d'aperçu du texte",
       showReadingTime: "Temps de lecture estimé",
@@ -295,9 +369,16 @@ export default {
       useNativeVideoPlayer: "Utiliser le lecteur vidéo natif du navigateur",
     },
     readability: {
+      media: "MÉDIAS",
+      useThirdPartyMediaPlayer: "Utiliser un lecteur vidéo tiers",
+      useThirdPartyMediaPlayerDescription:
+        "Fonction expérimentale : utiliser Video.js pour les vidéos des articles. L’audio utilise toujours le lecteur global avec synchronisation de la progression des pièces jointes audio.",
+      toolbars: "BARRES D’OUTILS",
+      readingNavigation: "NAVIGATION DE LECTURE",
+      showReadingRail: "Afficher la navigation de lecture",
       title: "Lecture",
       text: "TEXTE",
-      autoHideToolbar: "Masquer automatiquement la barre d'outils",
+      autoHideToolbar: "Masquer/afficher automatiquement les barres",
       font: "Police",
       systemFont: "Système",
       sansSerif: "Sans-serif",
@@ -315,6 +396,8 @@ export default {
       reset: "Réinitialiser",
     },
     ai: {
+      required: "{{field}} est obligatoire",
+      invalidBaseUrl: "Saisissez une URL HTTP ou HTTPS valide",
       title: "IA",
       description:
         "Actuellement, seuls OpenAI et les API compatibles OpenAI sont pris en charge",

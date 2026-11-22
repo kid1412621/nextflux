@@ -81,10 +81,10 @@ export default function ArticleListHeader() {
     <div className="px-2 z-10">
       <div className="article-list-header w-full border-b py-2 standalone:pt-safe-or-2">
         <div className="flex items-center gap-2">
-          <SidebarTrigger />
+          <SidebarTrigger className="rounded-full" />
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold">{getTitleText()}</span>
-            <span className="truncate text-xs text-muted opacity-60">
+            <span className="truncate text-xs text-muted-foreground opacity-60">
               {$isSyncing ? t("common.syncing") : getFilteredCount()}
             </span>
           </div>

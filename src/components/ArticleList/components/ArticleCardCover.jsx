@@ -20,14 +20,14 @@ function ArticleCardCover({ imageUrl }) {
     return (
       <div
         className={cn(
-          "card-image bg-default rounded-lg shadow-custom overflow-hidden",
+          "card-image relative bg-secondary rounded-lg shadow-custom overflow-hidden",
           cardImageSize === "large"
             ? "aspect-video w-full"
             : "w-20 h-20 shrink-0",
         )}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-2 text-muted">
-          <ImageOff className="size-5 text-muted" />
+        <div className="card-image-content flex flex-col items-center justify-center h-full gap-2 text-muted-foreground transition-opacity">
+          <ImageOff className="size-5 text-muted-foreground" />
         </div>
       </div>
     );
@@ -37,26 +37,28 @@ function ArticleCardCover({ imageUrl }) {
     <div
       ref={imgRef}
       className={cn(
-        "card-image bg-default rounded-lg shadow-custom overflow-hidden",
+        "card-image relative bg-secondary rounded-lg shadow-custom overflow-hidden",
         loading && "animate-pulse!",
         cardImageSize === "large"
           ? "aspect-video w-full"
           : "w-20 h-20 shrink-0",
       )}
     >
-      <Image
-        alt=""
-        src={imageUrl}
-        onLoad={() => setLoading(false)}
-        onError={() => setError(true)}
-        loading="eager"
-        className={cn(
-          "object-cover",
-          cardImageSize === "large"
-            ? "aspect-video w-full"
-            : "aspect-square w-20",
-        )}
-      />
+      <div className="card-image-content h-full transition-opacity">
+        <Image
+          alt=""
+          src={imageUrl}
+          onLoad={() => setLoading(false)}
+          onError={() => setError(true)}
+          loading="eager"
+          className={cn(
+            "object-cover",
+            cardImageSize === "large"
+              ? "aspect-video w-full"
+              : "aspect-square w-20",
+          )}
+        />
+      </div>
     </div>
   );
 }

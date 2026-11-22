@@ -1,5 +1,5 @@
+import { Separator } from "@/components/ui/separator";
 import { settingsState } from "@/stores/settingsStore";
-import { Separator } from "@heroui/react";
 import { useStore } from "@nanostores/react";
 import {
   ItemWrapper,
@@ -18,14 +18,10 @@ import {
   MonitorCog,
   WrapText,
   LetterText,
-  SquareArrowUp,
-  PanelLeft,
-  SquareRoundCorner,
 } from "lucide-react";
 import Theme from "./components/Theme";
 import { useTranslation } from "react-i18next";
 import SettingIcon from "@/components/ui/SettingIcon";
-
 export default function Appearance() {
   const {
     feedIconShape,
@@ -34,12 +30,9 @@ export default function Appearance() {
     showFavicon,
     showReadingTime,
     reduceMotion,
-    borderRadius,
     interfaceFontSize,
     textPreviewLines,
     titleLines,
-    showIndicator,
-    floatingSidebar,
   } = useStore(settingsState);
   const { t } = useTranslation();
   return (
@@ -56,24 +49,19 @@ export default function Appearance() {
           settingName="interfaceFontSize"
           settingValue={interfaceFontSize}
           options={[
-            { value: "14", label: t("settings.appearance.moreSpace") },
-            { value: "16", label: t("settings.appearance.normal") },
-            { value: "18", label: t("settings.appearance.LargerText") },
+            {
+              value: "14",
+              label: t("settings.appearance.moreSpace"),
+            },
+            {
+              value: "16",
+              label: t("settings.appearance.normal"),
+            },
+            {
+              value: "18",
+              label: t("settings.appearance.LargerText"),
+            },
           ]}
-        />
-        <Separator />
-        <SliderItem
-          label={t("settings.appearance.borderRadius")}
-          icon={
-            <SettingIcon variant="purple">
-              <SquareRoundCorner />
-            </SettingIcon>
-          }
-          settingName="borderRadius"
-          settingValue={borderRadius}
-          max={0.5}
-          min={0}
-          step={0.1}
         />
       </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.favicons")}>
@@ -87,8 +75,14 @@ export default function Appearance() {
           settingName="feedIconShape"
           settingValue={feedIconShape}
           options={[
-            { value: "circle", label: t("settings.appearance.circle") },
-            { value: "square", label: t("settings.appearance.square") },
+            {
+              value: "circle",
+              label: t("settings.appearance.circle"),
+            },
+            {
+              value: "square",
+              label: t("settings.appearance.square"),
+            },
           ]}
         />
         <Separator />
@@ -103,30 +97,7 @@ export default function Appearance() {
           settingValue={useGrayIcon}
         />
       </ItemWrapper>
-      <ItemWrapper title={t("settings.appearance.sidebar")}>
-        <SwitchItem
-          label={t("settings.appearance.floatingSidebar")}
-          icon={
-            <SettingIcon variant="default">
-              <PanelLeft />
-            </SettingIcon>
-          }
-          settingName="floatingSidebar"
-          settingValue={floatingSidebar}
-        />
-      </ItemWrapper>
       <ItemWrapper title={t("settings.appearance.articleList")}>
-        <SwitchItem
-          label={t("settings.appearance.showIndicator")}
-          icon={
-            <SettingIcon variant="amber">
-              <SquareArrowUp />
-            </SettingIcon>
-          }
-          settingName="showIndicator"
-          settingValue={showIndicator}
-        />
-        <Separator />
         <SliderItem
           label={t("settings.appearance.titleLines")}
           icon={
@@ -165,9 +136,18 @@ export default function Appearance() {
           settingName="cardImageSize"
           settingValue={cardImageSize}
           options={[
-            { value: "none", label: t("settings.appearance.none") },
-            { value: "small", label: t("settings.appearance.small") },
-            { value: "large", label: t("settings.appearance.large") },
+            {
+              value: "none",
+              label: t("settings.appearance.none"),
+            },
+            {
+              value: "small",
+              label: t("settings.appearance.small"),
+            },
+            {
+              value: "large",
+              label: t("settings.appearance.large"),
+            },
           ]}
         />
         <Separator />
